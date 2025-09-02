@@ -12,6 +12,9 @@ const ExpressError = require("./utils/ExpressError.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
+// joi
+const {listSchema,taskSchema} = require("../schema.js");
+
 // Flash and Session
 const session = require("express-session");
 const flash = require("connect-flash");

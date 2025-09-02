@@ -5,7 +5,18 @@ const router = express.Router({
 const wrapAsync = require("../utils/wrapAsync.js");
 const Task = require("../models/task.js");
 const List = require("../models/list.js");
-
+const {taskSchema} = require("../schema.js");
+const validateTask = (req,res,next)=>{
+    let result =taskSchema.validate(req.body);
+    console.log(result);
+    if(result.error){
+        let errMsg = result.error.details.map((el)=> el.message).join(",");
+        next(new ExpressError(400,result.error));
+    }
+    else{
+        next();
+    }
+}
 // New Task Route
 router.get("/new", (req, res) => {
     const listId = req.params.listId;
@@ -13,10 +24,8 @@ router.get("/new", (req, res) => {
 });
 
 // Create Task Route
-router.post("/", wrapAsync(async (req, res) => {
-    const {
-        listId
-    } = req.params;
+router.post("/",validateTask,wrapAsync(async (req, res) => {
+    const {listId} = req.params;
     const list = await List.findById(listId);
     if (!list) {
         req.flash("error","Invalid Listing");
@@ -77,7 +86,7 @@ router.delete("/:taskId", wrapAsync(async (req, res) => {
 }));
 
 // Task Completion Route - toggling 
-router.post("/:taskId/complete", wrapAsync(async (req, res) => {
+router.post("/:taskId/complete", validateTask,wrapAsync(async (req, res) => {
     const {
         listId,
         taskId
