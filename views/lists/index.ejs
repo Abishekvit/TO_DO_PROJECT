@@ -6,63 +6,94 @@
   </div>
 
   <% if (allLists.length > 0) { %>
-  <div class="lists-scroll-container">
-    <% for(let list of allLists) { %>
-      <div class="list-card">
-        <h5>
-          <a href="/lists/<%= list._id %>" class="text-decoration-none text-dark">
-            <%= list.name %>
-          </a>
-        </h5>
+        <%
+    const getClosestDueDate = (tasks) => {
+        if (!tasks || tasks.length === 0) return Infinity;
+        const today = new Date();
+        return Math.min(...tasks.map(t => {
+        const due = t.dueDate ? new Date(t.dueDate) : today;
+        return due >= today ? due : Infinity; 
+        }));
+    };
+    allLists.sort((a, b) => {
+    if (a.name.toLowerCase() === 'general routine') return -1; // always first
+    if (b.name.toLowerCase() === 'general routine') return 1;  // always first
+    return getClosestDueDate(a.tasks) - getClosestDueDate(b.tasks);
+    });
+    %>
 
-        <div class="mb-3">
-          <a href="/lists/<%= list._id %>/tasks/new" class="btn btn-sm btn-success rounded-pill">
-            <i class="fa-solid fa-plus me-1"></i> Add Task
-          </a>
-        </div>
+    <div class="lists-scroll-container">
+      <% for(let list of allLists) { %>
+        <div class="list-card">
+          <h5>
+            <a href="/lists/<%= list._id %>" class="text-decoration-none text-dark">
+              <%= list.name %>
+            </a>
+          </h5>
 
-        <% if(list.tasks && list.tasks.length > 0) { %>
-          <% 
-            const priorityOrder = { high: 1, medium: 2, low: 3 }; 
-            list.tasks.sort((a, b) => {
-              const prioCompare = priorityOrder[a.priority] - priorityOrder[b.priority];
-              if (prioCompare !== 0) return prioCompare;
-              return new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
-            });
-          %>
-          <% for(let task of list.tasks) { %>
-            <div class="subtask d-flex justify-content-between align-items-center mb-2">
-              <div>
-                <span><%= task.title %></span>
-                <br>
-                <small>
-                  Priority: <%= task.priority %> | 
-                  Due: <%= task.dueDate ? new Date(task.dueDate).toLocaleDateString("en-GB") : "No Due Date" %>
-                </small>
+          <div class="mb-3">
+            <% if(list.name.toLowerCase() === 'general routine') { %>
+              <!-- Button triggers single modal -->
+              <button type="button" class="btn btn-sm btn-success rounded-pill add-task-btn" 
+                      data-list-id="<%= list._id %>" 
+                      data-list-name="<%= list.name %>">
+                <i class="fa-solid fa-plus me-1"></i> Add Task
+              </button>
+            <% } else { %>
+              <a href="/lists/<%= list._id %>/tasks/new" class="btn btn-sm btn-success rounded-pill">
+                <i class="fa-solid fa-plus me-1"></i> Add Task
+              </a>
+            <% } %>
+          </div>
+
+          <% if(list.tasks && list.tasks.length > 0) { %>
+            <% 
+              const priorityOrder = { high: 1, medium: 2, low: 3 }; 
+              list.tasks.sort((a, b) => {
+                const prioCompare = priorityOrder[a.priority] - priorityOrder[b.priority];
+                if (prioCompare !== 0) return prioCompare;
+                return new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
+              });
+            %>
+            <% for(let task of list.tasks) { %>
+              <div class="subtask d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <span><%= task.title %></span>
+                  <% if(list.name.toLowerCase() !== 'general routine') { %>
+                    <br>
+                    <small>
+                    Priority: 
+                    <% let color = (task.priority === 'high') ? 'red' : ((task.priority === 'medium') ? 'orange' : 'green'); %>
+                    <span style="font-weight: bold; color:<%= color %>;">
+                        <%= task.priority.charAt(0).toUpperCase() + task.priority.slice(1) %>
+                    </span> |
+                    Due: <%= task.dueDate ? new Date(task.dueDate).toLocaleDateString("en-GB") : "No Due Date" %>
+                    </small>
+
+                  <% } %>
+                </div>
+                <div class="task-actions">
+                  <a href="/lists/<%= list._id %>/tasks/<%= task._id %>/edit" class="btn btn-sm btn-outline-primary me-1" title="Edit Task">
+                    <i class="fa-regular fa-eye"></i>
+                  </a>
+                  <form action="/lists/<%= list._id %>/tasks/<%= task._id %>?_method=DELETE" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Task">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                  </form>
+                </div>
               </div>
-              <div class="task-actions">
-                <a href="/lists/<%= list._id %>/tasks/<%= task._id %>/edit" class="btn btn-sm btn-outline-primary me-1" title="Edit Task">
-                  <i class="fa-regular fa-eye"></i>
-                </a>
-
-                <form action="/lists/<%= list._id %>/tasks/<%= task._id %>?_method=DELETE" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Task">
-                    <i class="fa-solid fa-check"></i>
-                  </button>
-                </form>
-              </div>
-            </div>
+            <% } %>
+          <% } else { %>
+            <p class="text-muted fst-italic">No subtasks yet</p>
           <% } %>
-        <% } else { %>
-          <p class="text-muted fst-italic">No subtasks yet</p>
-        <% } %>
-      </div>
-    <% } %>
-  </div>
+        </div>
+      <% } %>
+    </div>
   <% } else { %>
-  <div class="text-center">
-    <p class="text-muted fst-italic">You don't have any lists yet. Create one to get started!</p>
-  </div>
+    <div class="text-center">
+      <p class="text-muted fst-italic">You don't have any lists yet. Create one to get started!</p>
+    </div>
   <% } %>
 
   <div class="text-center mt-5">
@@ -71,3 +102,43 @@
     </a>
   </div>
 </div>
+<div class="modal fade" id="addTaskModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addTaskForm" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskLabel">Add Task</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="taskTitle" class="form-label">Task Name</label>
+            <input type="text" class="form-control" id="taskTitle" name="task[title]" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Add Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.add-task-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const listId = btn.dataset.listId;
+      const listName = btn.dataset.listName;
+
+      const modalLabel = document.getElementById('addTaskLabel');
+      const form = document.getElementById('addTaskForm');
+
+      modalLabel.textContent = `Add Task to ${listName}`;
+      form.action = `/lists/${listId}/tasks`;
+
+      const modal = new bootstrap.Modal(document.getElementById('addTaskModal'));
+      modal.show();
+    });
+  });
+</script>

@@ -63,6 +63,35 @@ toggleBtn.addEventListener("click", () => {
   }
 });
 </script>
+<script>
+  document.querySelectorAll('.add-task-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const listId = btn.dataset.listId;
+      const listName = btn.dataset.listName;
+
+      const modalLabel = document.getElementById('addTaskLabel');
+      const form = document.getElementById('addTaskForm');
+      const taskInput = document.getElementById('taskTitle');
+      const dueDateInput = document.getElementById('taskDueDate');
+
+      modalLabel.textContent = `Add Task to ${listName}`;
+      form.action = `/lists/${listId}/tasks`;
+      taskInput.value = "";
+
+      const modal = new bootstrap.Modal(document.getElementById('addTaskModal'));
+      modal.show();
+
+      form.onsubmit = () => {
+        if (!taskInput.value.trim()) {
+          taskInput.value = "Task: No Description";
+        }
+        const today = new Date().toISOString().split('T')[0];
+        dueDateInput.value = today;
+      };
+    });
+  });
+</script>
+
 
 
 </body>

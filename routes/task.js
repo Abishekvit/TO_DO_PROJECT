@@ -25,21 +25,49 @@ router.get("/new", (req, res) => {
 });
 
 // Create Task Route
-router.post("/",validateTask,wrapAsync(async (req, res) => {
-    const {listId} = req.params;
+router.post("/", validateTask, wrapAsync(async (req, res) => {
+    const { listId } = req.params;
     const list = await List.findById(listId);
     if (!list) {
-        req.flash("error","Invalid Listing");
+        req.flash("error", "Invalid Listing");
         return res.redirect("/lists");
     }
 
-    const newTask = new Task(req.body.task);
+    let { task } = req.body;
+
+    if (!task || typeof task !== "object") {
+        task = {};
+    }
+
+    if (!task.title || task.title.trim() === "") {
+        task.title = "Task: No Description";
+    }
+
+    if (!task.dueDate) {
+        task.dueDate = new Date();
+    } else {
+        task.dueDate = new Date(task.dueDate);
+    }
+
+    const newTask = new Task({
+        title: task.title,
+        description: task.description || "",
+        completed: false,
+        createdAt: new Date(),
+        dueDate: task.dueDate,
+        priority: task.priority || "medium",
+        user: req.user?._id
+    });
+
     await newTask.save();
     list.tasks.push(newTask);
     await list.save();
-    req.flash("success","New Task Created!");
+
+    req.flash("success", "New Task Created!");
     res.redirect(`/lists`);
 }));
+
+
 
 // Edit Task Route
 router.get("/:taskId/edit", wrapAsync(async (req, res) => {

@@ -22,7 +22,6 @@ const flash = require("connect-flash");
 // Routes
 const listRouter = require("./routes/list.js");
 const taskRouter = require("./routes/task.js");
-
 // middlewares
 
 app.use(methodOverride("_method"));
@@ -45,10 +44,8 @@ const sessionOptions = {
         httpOnly: true,
     },
 };
-
 app.use(session(sessionOptions));
 app.use(flash());
-
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
@@ -62,7 +59,6 @@ app.get("/", (req, res) => {
 
 app.use("/lists", listRouter);
 app.use("/lists/:listId/tasks", taskRouter);
-
 
 // Connection to Atlas
 app.use(methodOverride("_method"));
