@@ -1,0 +1,40 @@
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.list-card-link {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease-in-out;
+}
+
+.list-card-link:hover {
+    transform: translateY(-5px);
+}
+
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary, .btn-outline-primary {
+    border-radius: 50px;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+}
+
+.form-control {
+    border-radius: 0.5rem;
+}
+
+.list-group-item {
+    border-left: none;
+    border-right: none;
+}

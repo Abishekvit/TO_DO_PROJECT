@@ -12,6 +12,14 @@ const ExpressError = require("./utils/ExpressError.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
+// Flash and Session
+const session = require("express-session");
+const flash = require("connect-flash");
+
+// Routes
+const listRouter = require("./routes/lists.js");
+const taskRouter = require("./routes/tasks.js");
+
 // middlewares
 
 app.use(methodOverride("_method"));
@@ -22,6 +30,34 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname,"public")));
 app.engine("ejs",ejsMate);
 
+// Express Session
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+    },
+};
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
+
+// App Routes
+app.get("/", (req, res) => {
+    res.redirect("/lists");
+});
+
+app.use("/lists", listRouter);
+app.use("/lists/:listId/tasks", taskRouter);
 
 // EXPRESS SESSION
 const session = require("express-session");

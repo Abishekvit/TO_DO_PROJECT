@@ -1,0 +1,21 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-5">
+<div class="row">
+<div class="col-md-6 offset-md-3">
+<h1 class="display-5 fw-bold text-center mb-4">Create a New List</h1>
+<form action="/lists" method="POST" class="needs-validation" novalidate>
+<div class="mb-3">
+<label for="name" class="form-label fw-bold">List Name</label>
+<input name="list[name]" type="text" class="form-control" id="name" required placeholder="e.g., Groceries, Weekend Plans">
+<div class="invalid-feedback">
+Please provide a valid list name.
+</div>
+</div>
+<div class="d-grid gap-2">
+<button class="btn btn-primary btn-lg fw-bold rounded-pill mt-3">Add List</button>
+</div>
+</form>
+</div>
+</div>
+</div>
