@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const app = express();
+const initDB = require("./init/index.js");
 const mongoose = require("mongoose");
 const MONGO_URL = process.env.MONGO_URL ;
 const path = require("path");
@@ -28,18 +29,18 @@ const flash = require("connect-flash");
 
 
 // Connection to Atlas
+app.use(methodOverride("_method"));
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
-};
-app.use(methodOverride("_method"));
-main()
-    .then(()=>{
-        console.log("connected to DB");
-    })
-    .catch(()=>{
-        console.log(err);
+    await mongoose.connect(MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
     });
+    console.log("Connected to DB");
+    await initDB();
+}
+main().catch(err => console.log("Error connecting to DB:", err));
+
 app.listen(1010, () =>{
     console.log("server is listening to port 1010");
 })
