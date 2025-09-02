@@ -13,15 +13,15 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
 // joi
-const {listSchema,taskSchema} = require("../schema.js");
+const {listSchema,taskSchema} = require("./schema.js");
 
 // Flash and Session
 const session = require("express-session");
 const flash = require("connect-flash");
 
 // Routes
-const listRouter = require("./routes/lists.js");
-const taskRouter = require("./routes/tasks.js");
+const listRouter = require("./routes/list.js");
+const taskRouter = require("./routes/task.js");
 
 // middlewares
 
@@ -33,7 +33,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname,"public")));
 app.engine("ejs",ejsMate);
 
-// Express Session
+
+// EXPRESS SESSION
 const sessionOptions = {
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -61,10 +62,6 @@ app.get("/", (req, res) => {
 
 app.use("/lists", listRouter);
 app.use("/lists/:listId/tasks", taskRouter);
-
-// EXPRESS SESSION
-const session = require("express-session");
-const flash = require("connect-flash");
 
 
 // Connection to Atlas
