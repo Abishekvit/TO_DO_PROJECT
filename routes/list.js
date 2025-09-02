@@ -19,7 +19,7 @@ const validateList = (req,res,next)=>{
 // Index Route
 
 router.get("/", wrapAsync(async (req, res) => {
-    const allLists = await List.find({});
+    const allLists = await List.find({}).populate("tasks");
     res.render("lists/index.ejs", {allLists});
 }));
 

@@ -1,29 +1,73 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="container my-5">
-<div class="row text-center mb-5">
-<h1 class="display-5 fw-bold">All My Lists</h1>
-</div>
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-<% if (allLists.length > 0) { %>
-<% for(let list of allLists) { %>
-<div class="col">
-<a href="/lists/<%= list._id %>" class="list-card-link text-decoration-none">
-<div class="card h-100 shadow-sm border-0 rounded-4 list-card-hover">
-<div class="card-body d-flex flex-column justify-content-center align-items-center">
-<h5 class="card-title fw-bold text-dark"><%= list.name %></h5>
-</div>
-</div>
-</a>
-</div>
-<% } %>
-<% } else { %>
-<div class="col-12 text-center">
-<p class="text-muted fst-italic">You don't have any lists yet. Create one to get started!</p>
-</div>
-<% } %>
-</div>
-<div class="text-center mt-5">
-<a href="/lists/new" class="btn btn-primary btn-lg fw-bold rounded-pill shadow">Create New List</a>
-</div>
+  <div class="row text-center mb-5">
+    <h1 class="display-5 fw-bold">All My Lists</h1>
+  </div>
+
+  <% if (allLists.length > 0) { %>
+  <div class="lists-scroll-container">
+    <% for(let list of allLists) { %>
+      <div class="list-card">
+        <h5>
+          <a href="/lists/<%= list._id %>" class="text-decoration-none text-dark">
+            <%= list.name %>
+          </a>
+        </h5>
+
+        <div class="mb-3">
+          <a href="/lists/<%= list._id %>/tasks/new" class="btn btn-sm btn-success rounded-pill">
+            <i class="fa-solid fa-plus me-1"></i> Add Task
+          </a>
+        </div>
+
+        <% if(list.tasks && list.tasks.length > 0) { %>
+          <% 
+            const priorityOrder = { high: 1, medium: 2, low: 3 }; 
+            list.tasks.sort((a, b) => {
+              const prioCompare = priorityOrder[a.priority] - priorityOrder[b.priority];
+              if (prioCompare !== 0) return prioCompare;
+              return new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
+            });
+          %>
+          <% for(let task of list.tasks) { %>
+            <div class="subtask d-flex justify-content-between align-items-center mb-2">
+              <div>
+                <span><%= task.title %></span>
+                <br>
+                <small>
+                  Priority: <%= task.priority %> | 
+                  Due: <%= task.dueDate ? new Date(task.dueDate).toLocaleDateString("en-GB") : "No Due Date" %>
+                </small>
+              </div>
+              <div class="task-actions">
+                <a href="/lists/<%= list._id %>/tasks/<%= task._id %>/edit" class="btn btn-sm btn-outline-primary me-1" title="Edit Task">
+                  <i class="fa-regular fa-eye"></i>
+                </a>
+
+                <form action="/lists/<%= list._id %>/tasks/<%= task._id %>?_method=DELETE" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Task">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% } %>
+        <% } else { %>
+          <p class="text-muted fst-italic">No subtasks yet</p>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+  <% } else { %>
+  <div class="text-center">
+    <p class="text-muted fst-italic">You don't have any lists yet. Create one to get started!</p>
+  </div>
+  <% } %>
+
+  <div class="text-center mt-5">
+    <a href="/lists/new" class="btn btn-primary btn-lg fw-bold rounded-pill shadow">
+      Create New List
+    </a>
+  </div>
 </div>

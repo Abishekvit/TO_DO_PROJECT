@@ -5,15 +5,31 @@ body {
     background-size: cover;  
     background-repeat: no-repeat; 
     background-position: center;   
-    height: 120vh;                
+    min-height: 120vh;                
     margin: 0;                     
     padding: 0; 
 }
-.navbar {
-    border-bottom: 0.5px 5px 4px solid #000000;
-    z-index: 500;
+.toggle,
+h1 {
+  color: #111111; 
+  transition: color 0.4s ease;
 }
 
+body.dark-mode {
+  background-image: url("/assets/blackbackground.jpg");
+}
+
+body.dark-mode .toggle,
+body.dark-mode h1 {
+  color: #ffffff;
+}
+body.dark-mode .navbar {
+    border-bottom: 0.1px solid #ffffff;
+}
+
+.navbar {
+    border-bottom: 0.5px 5px 4px solid #000000;
+}
 .list-card-link {
     text-decoration: none;
     color: inherit;
@@ -55,8 +71,120 @@ footer {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0.8rem 0;
+  padding: 0.8rem 0.2rem 0 0.8rem;
   z-index: 1000;
-  height: 10%;
+  height: 7%;
 }
 
+/* for horizontal scroll */
+.lists-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  scroll-snap-type: x mandatory; 
+}
+
+.lists-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.lists-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+.list-card {
+  flex: 0 0 auto; 
+  min-width: 300px; 
+  max-width: 350px;
+  scroll-snap-align: start;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  padding: 1rem;
+  margin-left: 1.5rem;
+}
+.list-card h5 {
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+.subtask {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+.subtask small {
+  color: #888;
+}
+
+/* Curtain styling */
+.curtain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle, #111 0%, #000 100%);
+}
+
+/* Panels */
+.curtain-panel {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, #0b0b0b, #1a1a1a, #222222, #1a1a1a, #0b0b0b);
+background-size: 200% 200%;
+  z-index: 2001;
+  transition: transform 1.5s ease-in-out, opacity 1.2s ease;
+  animation: fireStreak 1s linear infinite;
+}
+
+
+/* Fire animation */
+@keyframes fireStreak {
+  0% { background-position: 0 0; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0 100%; }
+}
+
+/* Text inside curtain */
+.curtain-text {
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  z-index: 2002;
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+  text-shadow: 0 0 15px #ff4500, 0 0 25px #ff8c00, 0 0 35px #ffa500;
+}
+
+.curtain.open .curtain-text {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.list-card {
+  flex: 0 0 auto; 
+  min-width: 300px; 
+  max-width: 350px;
+  scroll-snap-align: start;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.list-card:hover {
+  transform: scale(1.2); 
+  box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2); 
+  z-index: 10; 
+}

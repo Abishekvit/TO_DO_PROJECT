@@ -38,7 +38,7 @@ router.post("/",validateTask,wrapAsync(async (req, res) => {
     list.tasks.push(newTask);
     await list.save();
     req.flash("success","New Task Created!");
-    res.redirect(`/lists/${listId}`);
+    res.redirect(`/lists`);
 }));
 
 // Edit Task Route
@@ -67,7 +67,7 @@ router.put("/:taskId", wrapAsync(async (req, res) => {
         ...req.body.task
     });
     req.flash("success","Updated Task!");
-    res.redirect(`/lists/${listId}`);
+    res.redirect(`/lists`);
 }));
 
 // Delete Task Route
@@ -83,7 +83,7 @@ router.delete("/:taskId", wrapAsync(async (req, res) => {
     });
     await Task.findByIdAndDelete(taskId);
     req.flash("success","Deleted Task!");
-    res.redirect(`/lists/${listId}`);
+    res.redirect(`/lists`);
 }));
 
 // Task Completion Route - toggling 
