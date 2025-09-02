@@ -1,10 +1,17 @@
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa; */
+    background-image: url("/assets/backgroundc.jpg");
+    background-size: cover;  
+    background-repeat: no-repeat; 
+    background-position: center;   
+    height: 120vh;                
+    margin: 0;                     
+    padding: 0; 
 }
-
 .navbar {
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 0.5px 5px 4px solid #000000;
+    z-index: 500;
 }
 
 .list-card-link {
@@ -38,3 +45,18 @@ body {
     border-left: none;
     border-right: none;
 }
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #333;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.8rem 0;
+  z-index: 1000;
+  height: 10%;
+}
+

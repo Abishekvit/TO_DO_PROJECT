@@ -73,7 +73,7 @@ async function main() {
         useUnifiedTopology: true
     });
     console.log("Connected to DB");
-    await initDB();
+    // await initDB();
 }
 main().catch(err => console.log("Error connecting to DB:", err));
 

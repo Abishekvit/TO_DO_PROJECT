@@ -4,7 +4,7 @@
 <div class="row">
 <div class="col-md-6 offset-md-3">
 <h1 class="display-5 fw-bold text-center mb-4">Add New Task</h1>
-<form action="/lists/<%= list._id %>/tasks" method="POST" class="needs-validation" novalidate>
+<form action="/lists/<%= listId %>/tasks" method="POST" class="needs-validation" novalidate>
 <div class="mb-3">
 <label for="title" class="form-label fw-bold">Task Title</label>
 <input name="task[title]" type="text" class="form-control" id="title" required placeholder="e.g., Buy groceries, Finish report">
@@ -18,7 +18,7 @@ Please provide a valid task title.
 </div>
 <div class="mb-3">
 <label for="dueDate" class="form-label fw-bold">Due Date</label>
-<input name="task[dueDate]" type="date" class="form-control" id="dueDate">
+<input name="task[dueDate]" type="date" class="form-control" id="dueDate" required>
 </div>
 <div class="mb-3">
 <label for="priority" class="form-label fw-bold">Priority</label>
@@ -33,7 +33,7 @@ Please provide a valid task title.
 </div>
 </form>
 <div class="text-center mt-3">
-<a href="/lists/<%= list._id %>" class="btn btn-outline-secondary rounded-pill">
+<a href="/lists/<%= listId %>" class="btn btn-outline-secondary rounded-pill">
 <i class="fa-solid fa-arrow-left me-2"></i>Back to list
 </a>
 </div>

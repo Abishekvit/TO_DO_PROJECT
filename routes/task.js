@@ -6,6 +6,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const Task = require("../models/task.js");
 const List = require("../models/list.js");
 const {taskSchema} = require("../schema.js");
+const ExpressError = require("../utils/ExpressError.js");
 const validateTask = (req,res,next)=>{
     let result =taskSchema.validate(req.body);
     console.log(result);
@@ -86,11 +87,8 @@ router.delete("/:taskId", wrapAsync(async (req, res) => {
 }));
 
 // Task Completion Route - toggling 
-router.post("/:taskId/complete", validateTask,wrapAsync(async (req, res) => {
-    const {
-        listId,
-        taskId
-    } = req.params;
+router.post("/:taskId/complete",wrapAsync(async (req, res) => {
+    const {listId,taskId} = req.params;
     const task = await Task.findById(taskId);
     if (!task) {
         return res.redirect(`/lists/${listId}`);
