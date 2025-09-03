@@ -11,7 +11,7 @@ const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-
+const User = require("./models/user.js");
 // joi
 const {listSchema,taskSchema} = require("./schema.js");
 
@@ -22,6 +22,7 @@ const flash = require("connect-flash");
 // Routes
 const listRouter = require("./routes/list.js");
 const taskRouter = require("./routes/task.js");
+const userRouter = require("./routes/user.js");
 // middlewares
 
 app.use(methodOverride("_method"));
@@ -45,6 +46,14 @@ const sessionOptions = {
     },
 };
 app.use(session(sessionOptions));
+
+// Passport Config
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(flash());
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
@@ -59,6 +68,7 @@ app.get("/", (req, res) => {
 
 app.use("/lists", listRouter);
 app.use("/lists/:listId/tasks", taskRouter);
+app.use("/", userRouter);
 
 // Connection to Atlas
 app.use(methodOverride("_method"));

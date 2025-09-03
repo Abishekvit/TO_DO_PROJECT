@@ -5,6 +5,7 @@ const List = require("../models/list.js");
 const Task = require("../models/task.js");
 const {listSchema,taskSchema} = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
+const { isLoggedIn } = require("../middleware.js");
 const validateList = (req,res,next)=>{
     let result =listSchema.validate(req.body);
     console.log(result);
@@ -18,18 +19,18 @@ const validateList = (req,res,next)=>{
 }
 // Index Route
 
-router.get("/", wrapAsync(async (req, res) => {
+router.get("/", isLoggedIn,wrapAsync(async (req, res) => {
     const allLists = await List.find({}).populate("tasks");
     res.render("lists/index.ejs", {allLists});
 }));
 
 // New Route
-router.get("/new", (req, res) => {
+router.get("/new",isLoggedIn, (req, res) => {
     res.render("lists/new.ejs");
 });
 
 // Show Route
-router.get("/:id", wrapAsync(async (req, res) => {
+router.get("/:id", isLoggedIn,wrapAsync(async (req, res) => {
     const {id} = req.params;
     const list = await List.findById(id).populate("tasks");
     if (!list) {
@@ -47,7 +48,7 @@ router.post("/", validateList,wrapAsync(async (req, res) => {
 }));
 
 // Edit Route (GET)
-router.get("/:id/edit", wrapAsync(async (req, res) => {
+router.get("/:id/edit", isLoggedIn,wrapAsync(async (req, res) => {
     const { id } = req.params;
     const list = await List.findById(id);
     if (!list) {

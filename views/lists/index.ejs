@@ -27,7 +27,14 @@
         <div class="list-card">
           <h5>
             <a href="/lists/<%= list._id %>" class="text-decoration-none text-dark">
-              <%= list.name %>
+              <%= list.name %> &nbsp;
+              <% if (list.name !== "General Routine") { %>
+                <form action="/lists/<%= list._id %>?_method=DELETE" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                    🗑️
+                  </button>
+                </form>
+              <% } %>
             </a>
           </h5>
 
