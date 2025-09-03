@@ -5,7 +5,7 @@
     <h1 class="text-center mb-4">Login</h1>
     <form action="/login" method="POST" class="needs-validation" novalidate>
       <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
+        <label for="username" class="form-label toggle">Username</label>
         <input 
           type="text" 
           name="username" 
@@ -17,7 +17,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="form-label toggle">Password</label>
         <input 
           type="password" 
           name="password" 
@@ -25,13 +25,13 @@
           class="form-control" 
           required 
         />
-        <div class="invalid-feedback">Please enter your password.</div>
+        <div class="invalid-feedback toggle">Please enter your password.</div>
       </div>
 
       <button type="submit" class="btn btn-success w-100">Login</button>
     </form>
 
-    <div class="text-center mt-3">
+    <div class="text-center mt-3 toggle">
       <small>Don't have an account? 
         <a href="/signup" class="fw-bold">Sign up here</a>
       </small>
